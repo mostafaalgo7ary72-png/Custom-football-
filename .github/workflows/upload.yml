@@ -1,0 +1,63 @@
+name: Arabic Football Bot
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg imagemagick fonts-dejavu-core fonts-freefont-ttf
+        sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml || true
+
+    - name: Install Python Packages
+      run: |
+        pip install --upgrade pip
+        pip install requests beautifulsoup4 Pillow numpy
+        pip install moviepy==1.0.3
+        pip install edge-tts groq
+        pip install google-api-python-client google-auth google-auth-oauthlib google-auth-httplib2
+
+    - name: Run Bot
+      env:
+        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        YOUTUBE_TOKEN: ${{ secrets.YOUTUBE_TOKEN }}
+        FACEBOOK_ACCESS_TOKEN: ${{ secrets.FACEBOOK_ACCESS_TOKEN }}
+        FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+      run: python youtube_arabic.py
+
+    - name: Commit and Push Changes
+      if: always()
+      run: |
+        git config --local user.name "Arabic Football Bot"
+        git config --local user.email "bot@github.com"
+        git pull --rebase || true
+        git add history.json source_index.json || true
+        git diff --staged --quiet || git commit -m "Update history and source index [skip ci]"
+        git push origin main || git push origin master || true
+
+    - name: Cleanup
+      if: always()
+      run: |
+        rm -f *.jpg *.mp3 *.mp4 *.png || true
