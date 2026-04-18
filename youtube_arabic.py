@@ -50,8 +50,8 @@ SHORTS_HEIGHT = 1920
 FPS = 24
 HISTORY_FILE = "history.json"
 SOURCE_INDEX_FILE = "source_index.json"
-CHANNEL_NAME_AR = "ملوك الملعب"
-CHANNEL_NAME_EN = "Kings of the Stadium"
+CHANNEL_NAME_AR = "كاستم فوتبول"
+CHANNEL_NAME_EN = "custom football"
 
 # ====================== موديلات Groq المدعومة ======================
 GROQ_MODELS = [
