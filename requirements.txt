@@ -1,0 +1,13 @@
+google-api-python-client
+google-auth-oauthlib
+google-auth-httplib2
+requests
+moviepy==1.0.3
+Pillow==10.4.0
+groq
+edge-tts
+imageio-ffmpeg
+decorator==4.4.2
+beautifulsoup4
+numpy==1.26.4
+requests-auth-aws-sigv4
